@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Herd | Darren Rodricks</title>
+  <meta name="description" content="Herd - A group travel planning app by Darren Rodricks">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LOGO / MENU BUTTON
+       ═══════════════════════════════════════════════════════════ */
+    .logo {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.5s forwards;
+    }
+
+    .logo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-style: normal;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+    }
+
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      border-radius: 25px;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0;
+    }
+
+    .menu-items {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0;
+    }
+
+    .menu-items a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 400;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .menu-items a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .menu-container:hover {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 25px;
+      padding: 0.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .menu-container:hover .logo-btn {
+      border-color: transparent;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .menu-container:hover .menu-items {
+      max-height: 200px;
+      opacity: 1;
+      padding-bottom: 0.2rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       WEBGL CANVAS BACKGROUND
+       ═══════════════════════════════════════════════════════════ */
+    #gradient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MAIN LAYOUT
+       ═══════════════════════════════════════════════════════════ */
+    .page-content {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 4rem;
+    }
+
+    .project-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 4rem;
+    }
+
+    @media (max-width: 900px) {
+      html {
+        font-size: 16px;
+      }
+
+      .project-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .page-content {
+        padding: 5rem 1.5rem 3rem 1.5rem;
+      }
+
+      .logo {
+        top: 1.25rem;
+        left: 1.25rem;
+      }
+
+      .logo-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 0.9rem;
+      }
+
+      .menu-items a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .main-content {
+        padding: 2rem;
+      }
+
+      .project-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+      }
+
+      .project-tagline {
+        font-size: 1.1rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .section-content {
+        font-size: 1.05rem;
+      }
+
+      .back-link {
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      html {
+        font-size: 15px;
+      }
+
+      .page-content {
+        padding: 4.5rem 1.25rem 2.5rem 1.25rem;
+      }
+
+      .logo {
+        top: 1rem;
+        left: 1rem;
+      }
+
+      .logo-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 0.85rem;
+      }
+
+      .main-content {
+        padding: 1.5rem;
+      }
+
+      .project-title {
+        font-size: clamp(1.75rem, 10vw, 2.5rem);
+      }
+
+      .project-tagline {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .section-content {
+        font-size: 1rem;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SIDEBAR - CONTENTS
+       ═══════════════════════════════════════════════════════════ */
+    .sidebar {
+      position: sticky;
+      top: 6rem;
+      height: fit-content;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .sidebar-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar-nav a {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 0.4rem 0;
+      transition: all 0.2s ease;
+      border-left: 2px solid transparent;
+      padding-left: 1rem;
+      margin-left: -1rem;
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      color: #fff;
+      border-left-color: rgba(255, 180, 170, 0.9);
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: relative;
+        top: 0;
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MAIN CONTENT
+       ═══════════════════════════════════════════════════════════ */
+    .main-content {
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 3rem;
+    }
+
+    /* Hero Section */
+    .project-hero {
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.3s forwards;
+    }
+
+    .project-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 500;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .project-tagline {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.7;
+      max-width: 650px;
+    }
+
+    /* Phone Mockups */
+    .mockups-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 3rem 0;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.5s forwards;
+    }
+
+    .phone-mockup {
+      width: 180px;
+      height: 380px;
+      background: linear-gradient(145deg, rgba(60, 65, 80, 0.9), rgba(45, 48, 60, 0.95));
+      border-radius: 28px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .phone-screen {
+      flex: 1;
+      background: linear-gradient(165deg, rgba(45, 50, 65, 0.95), rgba(35, 38, 50, 0.98));
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phone-screen-content {
+      text-align: center;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .phone-screen-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       APP UI STYLES
+       ═══════════════════════════════════════════════════════════ */
+    .app-ui {
+      width: 100%;
+      height: 100%;
+      padding: 2rem 0.75rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .app-header {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.75rem;
+    }
+
+    .app-greeting {
+      font-size: 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 0.15rem;
+    }
+
+    .app-back {
+      font-size: 0.45rem;
+      color: rgba(255, 180, 170, 0.9);
+      margin-bottom: 0.15rem;
+    }
+
+    .app-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Trip Cards */
+    .trip-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.6rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .trip-card-small {
+      padding: 0.5rem;
+    }
+
+    .trip-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .trip-destination {
+      font-size: 0.55rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .trip-date {
+      font-size: 0.4rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .trip-avatars {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 180, 170, 0.6), rgba(200, 160, 200, 0.6));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.35rem;
+      font-weight: 600;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .avatar-more {
+      font-size: 0.35rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-left: 0.15rem;
+    }
+
+    .trip-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 180, 170, 0.8), rgba(255, 200, 180, 0.8));
+      border-radius: 2px;
+    }
+
+    .progress-text {
+      font-size: 0.35rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .app-fab {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, rgba(255, 180, 170, 0.9), rgba(255, 150, 140, 0.9));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255, 150, 140, 0.4);
+    }
+
+    /* Day Tabs */
+    .day-tabs {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .day-tab {
+      font-size: 0.4rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .day-tab.active {
+      background: rgba(255, 180, 170, 0.3);
+      color: #fff;
+    }
+
+    /* Itinerary Items */
+    .itinerary-item {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .itinerary-time {
+      font-size: 0.35rem;
+      color: rgba(255, 180, 170, 0.9);
+      width: 35px;
+      flex-shrink: 0;
+    }
+
+    .itinerary-content {
+      flex: 1;
+    }
+
+    .itinerary-title {
+      font-size: 0.45rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.1rem;
+    }
+
+    .itinerary-desc {
+      font-size: 0.35rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .ai-badge {
+      margin-top: auto;
+      font-size: 0.4rem;
+      color: rgba(255, 200, 180, 0.8);
+      text-align: center;
+      padding: 0.4rem;
+      background: rgba(255, 180, 170, 0.1);
+      border-radius: 8px;
+    }
+
+    /* Expense UI */
+    .expense-total {
+      text-align: center;
+      padding: 0.6rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      margin-bottom: 0.6rem;
+    }
+
+    .expense-label {
+      display: block;
+      font-size: 0.35rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 0.2rem;
+    }
+
+    .expense-amount {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .expense-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .expense-icon {
+      font-size: 0.6rem;
+    }
+
+    .expense-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .expense-name {
+      font-size: 0.4rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .expense-paid {
+      font-size: 0.32rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .expense-cost {
+      font-size: 0.45rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .settle-banner {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      background: linear-gradient(135deg, rgba(255, 180, 170, 0.2), rgba(255, 150, 140, 0.2));
+      border-radius: 8px;
+      font-size: 0.4rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .settle-amount {
+      font-weight: 600;
+      color: rgba(255, 200, 180, 1);
+    }
+
+    .phone-notch {
+      width: 50px;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.95);
+      border-radius: 10px;
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    @media (max-width: 600px) {
+      .mockups-container {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .phone-mockup {
+        width: 160px;
+        height: 340px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .phone-mockup {
+        width: 140px;
+        height: 300px;
+      }
+    }
+
+    /* Metadata Grid */
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.6s forwards;
+    }
+
+    .metadata-item h3 {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    .metadata-item p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 1);
+    }
+
+    @media (max-width: 500px) {
+      .metadata-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* Content Sections */
+    .content-section {
+      margin: 4rem 0;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    .content-section:nth-child(1) { animation-delay: 0.7s; }
+    .content-section:nth-child(2) { animation-delay: 0.8s; }
+    .content-section:nth-child(3) { animation-delay: 0.9s; }
+    .content-section:nth-child(4) { animation-delay: 1.0s; }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: rgba(255, 200, 190, 1);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-content {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.8;
+    }
+
+    .section-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-content ul {
+      margin: 1.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .section-content li {
+      margin-bottom: 0.75rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Feature Cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 180, 170, 0.5);
+      transform: translateY(-3px);
+    }
+
+    .feature-card h4 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+
+      .feature-card {
+        padding: 1.25rem;
+      }
+
+      .feature-card h4 {
+        font-size: 1rem;
+      }
+
+      .feature-card p {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Tech Stack */
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .tech-tag {
+      background: rgba(255, 180, 170, 0.2);
+      border: 1px solid rgba(255, 180, 170, 0.5);
+      color: rgba(255, 255, 255, 1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(255, 180, 170, 0.15);
+      border: 1px solid rgba(255, 180, 170, 0.4);
+      padding: 0.75rem 1.25rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      color: rgba(255, 220, 210, 1);
+      margin-top: 1rem;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: rgba(255, 180, 170, 1);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.1); }
+    }
+
+    /* Other Work Section */
+    .other-work {
+      margin-top: 6rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 1.1s forwards;
+    }
+
+    .other-work-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .other-work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .other-work-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .other-work-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 180, 170, 0.5);
+      transform: translateY(-3px);
+    }
+
+    .other-work-card h3 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .other-work-card p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .other-work-card .arrow {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .other-work-card:hover .arrow {
+      color: #fff;
+      transform: translateX(5px);
+    }
+
+    @media (max-width: 600px) {
+      .other-work-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .other-work-card {
+        padding: 1.25rem;
+        min-height: 44px;
+      }
+
+      .other-work-card h3 {
+        font-size: 1.1rem;
+      }
+
+      .other-work-card p {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      transition: all 0.2s ease;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.2s forwards;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .page-footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- WebGL Gradient Canvas -->
+  <canvas id="gradient-canvas"></canvas>
+
+  <!-- Vertex Shader -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec2 a_position;
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  </script>
+
+  <!-- Fragment Shader -->
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision highp float;
+    
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+    
+    vec4 permute(vec4 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) { 
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+
+      vec3 i  = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+
+      i = mod(i, 289.0);
+      vec4 p = permute(permute(permute(
+                i.z + vec4(0.0, i1.z, i2.z, 1.0))
+              + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+              + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+      float n_ = 1.0/7.0;
+      vec3 ns = n_ * D.wyz - D.xzx;
+
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+
+      vec4 x = x_ *ns.x + ns.yyyy;
+      vec4 y = y_ *ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+
+      vec3 p0 = vec3(a0.xy, h.x);
+      vec3 p1 = vec3(a0.zw, h.y);
+      vec3 p2 = vec3(a1.xy, h.z);
+      vec3 p3 = vec3(a1.zw, h.w);
+
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+      p0 *= norm.x;
+      p1 *= norm.y;
+      p2 *= norm.z;
+      p3 *= norm.w;
+
+      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    }
+    
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+      
+      float t = u_time * 0.35;
+      
+      vec2 mouseInfluence = (u_mouse - 0.5) * 0.15;
+      
+      float noise1 = snoise(vec3(uv.x * 1.8 + mouseInfluence.x, uv.y * 1.8 + mouseInfluence.y, t));
+      float noise2 = snoise(vec3(uv.x * 3.0 + 100.0, uv.y * 3.0, t * 1.2 + 50.0));
+      float noise3 = snoise(vec3(uv.x * 0.8 - 30.0, uv.y * 0.8 + 50.0, t * 0.8));
+      float noise4 = snoise(vec3(uv.x * 2.2 + 200.0, uv.y * 2.2, t * 1.5));
+      
+      float combinedNoise = (noise1 * 0.4 + noise2 * 0.3 + noise3 * 0.2 + noise4 * 0.1);
+      
+      vec3 color1 = vec3(0.25, 0.45, 0.50);
+      vec3 color2 = vec3(0.75, 0.50, 0.45);
+      vec3 color3 = vec3(0.60, 0.45, 0.65);
+      vec3 color4 = vec3(0.40, 0.55, 0.75);
+      vec3 color5 = vec3(0.40, 0.60, 0.50);
+      
+      float angle = t * 0.3;
+      float blend1 = smoothstep(-0.6, 0.6, combinedNoise + sin(uv.x * 3.14 + angle) * 0.3);
+      float blend2 = smoothstep(-0.4, 0.6, combinedNoise + cos(uv.y * 3.14 - angle) * 0.3);
+      float blend3 = smoothstep(-0.5, 0.5, sin(t * 0.5) * 0.5 + combinedNoise);
+      
+      vec3 colorA = mix(color1, color2, blend1);
+      vec3 colorB = mix(color3, color4, blend1);
+      vec3 colorC = mix(colorA, colorB, blend2);
+      vec3 finalColor = mix(colorC, color5, blend3 * 0.4);
+      
+      finalColor += combinedNoise * 0.12;
+      
+      float vignette = 1.0 - smoothstep(0.5, 1.6, length(uv - 0.5) * 1.0);
+      finalColor *= 0.92 + vignette * 0.08;
+      
+      float gray = dot(finalColor, vec3(0.299, 0.587, 0.114));
+      finalColor = mix(vec3(gray), finalColor, 1.15);
+      
+      gl_FragColor = vec4(finalColor, 1.0);
+    }
+  </script>
+
+  <!-- Logo / Menu Button -->
+  <nav class="logo">
+    <div class="menu-container">
+      <a href="index.html" class="logo-btn" aria-label="Home">DR</a>
+      <div class="menu-items">
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="gallery.html">Gallery</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-content">
+    <div class="project-container">
+      
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h2 class="sidebar-title">Contents</h2>
+        <nav class="sidebar-nav">
+          <a href="#overview" class="active">Overview</a>
+          <a href="#problem">Problem</a>
+          <a href="#solution">Solution</a>
+          <a href="#features">Features</a>
+          <a href="#status">Status</a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        
+        <!-- Back Link -->
+        <a href="work.html" class="back-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          Back to Work
+        </a>
+
+        <!-- Hero Section -->
+        <header class="project-hero" id="overview">
+          <h1 class="project-title">Herd</h1>
+          <p class="project-tagline">A modern, AI-powered travel planning platform that makes group trip planning simple and enjoyable. Plan trips together, vote on activities, split expenses, and get smart AI suggestions — all in one place.</p>
+        </header>
+
+        <!-- Phone Mockups -->
+        <div class="mockups-container">
+          <!-- Phone 1: Trip Dashboard -->
+          <div class="phone-mockup">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="app-ui">
+                <div class="app-header">
+                  <span class="app-greeting">Good morning 👋</span>
+                  <span class="app-title">Your Trips</span>
+                </div>
+                <div class="trip-card">
+                  <div class="trip-card-header">
+                    <span class="trip-destination">Tokyo, Japan</span>
+                    <span class="trip-date">Mar 15-22</span>
+                  </div>
+                  <div class="trip-avatars">
+                    <div class="avatar">D</div>
+                    <div class="avatar">S</div>
+                    <div class="avatar">M</div>
+                    <span class="avatar-more">+2</span>
+                  </div>
+                  <div class="trip-progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
+                    <span class="progress-text">65% planned</span>
+                  </div>
+                </div>
+                <div class="trip-card trip-card-small">
+                  <div class="trip-card-header">
+                    <span class="trip-destination">Barcelona</span>
+                    <span class="trip-date">Jun 8-14</span>
+                  </div>
+                  <div class="trip-avatars">
+                    <div class="avatar">D</div>
+                    <div class="avatar">J</div>
+                  </div>
+                </div>
+                <div class="app-fab">+</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone 2: AI Planner -->
+          <div class="phone-mockup">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="app-ui">
+                <div class="app-header">
+                  <span class="app-back">← Tokyo</span>
+                  <span class="app-title">AI Itinerary</span>
+                </div>
+                <div class="day-tabs">
+                  <span class="day-tab active">Day 1</span>
+                  <span class="day-tab">Day 2</span>
+                  <span class="day-tab">Day 3</span>
+                </div>
+                <div class="itinerary-item">
+                  <div class="itinerary-time">9:00 AM</div>
+                  <div class="itinerary-content">
+                    <div class="itinerary-title">Senso-ji Temple</div>
+                    <div class="itinerary-desc">Historic temple in Asakusa</div>
+                  </div>
+                </div>
+                <div class="itinerary-item">
+                  <div class="itinerary-time">12:30 PM</div>
+                  <div class="itinerary-content">
+                    <div class="itinerary-title">Tsukiji Outer Market</div>
+                    <div class="itinerary-desc">Fresh sushi lunch</div>
+                  </div>
+                </div>
+                <div class="itinerary-item">
+                  <div class="itinerary-time">3:00 PM</div>
+                  <div class="itinerary-content">
+                    <div class="itinerary-title">teamLab Planets</div>
+                    <div class="itinerary-desc">Digital art museum</div>
+                  </div>
+                </div>
+                <div class="ai-badge">✨ AI Generated</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone 3: Expense Split -->
+          <div class="phone-mockup">
+            <div class="phone-screen">
+              <div class="phone-notch"></div>
+              <div class="app-ui">
+                <div class="app-header">
+                  <span class="app-back">← Tokyo</span>
+                  <span class="app-title">Expenses</span>
+                </div>
+                <div class="expense-total">
+                  <span class="expense-label">Total Spent</span>
+                  <span class="expense-amount">$2,847.50</span>
+                </div>
+                <div class="expense-item">
+                  <div class="expense-icon">🏨</div>
+                  <div class="expense-details">
+                    <span class="expense-name">Hotel Booking</span>
+                    <span class="expense-paid">Paid by Darren</span>
+                  </div>
+                  <span class="expense-cost">$1,200</span>
+                </div>
+                <div class="expense-item">
+                  <div class="expense-icon">🍣</div>
+                  <div class="expense-details">
+                    <span class="expense-name">Dinner at Sukiyabashi</span>
+                    <span class="expense-paid">Paid by Sarah</span>
+                  </div>
+                  <span class="expense-cost">$340</span>
+                </div>
+                <div class="expense-item">
+                  <div class="expense-icon">🎫</div>
+                  <div class="expense-details">
+                    <span class="expense-name">teamLab Tickets</span>
+                    <span class="expense-paid">Paid by Mike</span>
+                  </div>
+                  <span class="expense-cost">$150</span>
+                </div>
+                <div class="settle-banner">
+                  <span>You owe Sarah</span>
+                  <span class="settle-amount">$68.50</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata -->
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <h3>Role</h3>
+            <p>Founder + Full Stack Dev</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Status</h3>
+            <p>In Active Development</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Timeline</h3>
+            <p>Started Fall 2024</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Tools</h3>
+            <p>Claude, Cursor, Figma, AWS</p>
+          </div>
+        </div>
+
+        <!-- Problem Section -->
+        <section class="content-section" id="problem">
+          <h2 class="section-title">The Problem</h2>
+          <div class="section-content">
+            <p>Planning group trips is notoriously frustrating. Coordinating schedules, preferences, and budgets across multiple people typically involves endless group chats, scattered Google Docs, and inevitably, someone feeling left out of decisions.</p>
+            <p>Existing solutions either focus on individual travel or require everyone to use complex tools. There's no simple way for friends to collaboratively plan, vote, and organize a trip together.</p>
+          </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section class="content-section" id="solution">
+          <h2 class="section-title">The Solution</h2>
+          <div class="section-content">
+            <p>Herd brings every aspect of group travel planning into one collaborative platform. Instead of scattered conversations and multiple apps, friends can:</p>
+            <ul>
+              <li><strong>Plan together:</strong> Create shared trip boards, invite friends via link, and collaborate in real-time</li>
+              <li><strong>Make decisions democratically:</strong> Built-in polls let everyone vote on destinations, activities, and restaurants</li>
+              <li><strong>Let AI do the heavy lifting:</strong> GPT-4 generates personalized itineraries based on group preferences, budget, and travel style</li>
+              <li><strong>Handle money transparently:</strong> Track expenses, split bills fairly, and settle up with integrated payment tracking</li>
+              <li><strong>Stay organized:</strong> Store all flight confirmations, hotel bookings, and travel documents in one place</li>
+              <li><strong>Document the journey:</strong> Create rich travel journals with photos and memories during and after the trip</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="content-section" id="features">
+          <h2 class="section-title">Key Features</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <h4>🗺️ Smart Trip Planning</h4>
+              <p>AI-powered itinerary generation and destination recommendations</p>
+            </div>
+            <div class="feature-card">
+              <h4>👥 Group Collaboration</h4>
+              <p>Invite friends, vote on activities, and plan together in real-time</p>
+            </div>
+            <div class="feature-card">
+              <h4>💰 Expense Splitting</h4>
+              <p>Track expenses, split bills fairly, and settle up easily</p>
+            </div>
+            <div class="feature-card">
+              <h4>🎫 Booking Management</h4>
+              <p>Save and organize all flight and hotel confirmations</p>
+            </div>
+            <div class="feature-card">
+              <h4>📔 Travel Journal</h4>
+              <p>Document adventures with rich text entries and photos</p>
+            </div>
+            <div class="feature-card">
+              <h4>🗳️ Group Polls</h4>
+              <p>Make decisions democratically with built-in voting</p>
+            </div>
+            <div class="feature-card">
+              <h4>🏆 Gamification</h4>
+              <p>Earn badges and track your travel achievements</p>
+            </div>
+            <div class="feature-card">
+              <h4>🤖 AI Assistant</h4>
+              <p>Get smart suggestions for activities, flights, and accommodations</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Status Section -->
+        <section class="content-section" id="status">
+          <h2 class="section-title">Currently Building</h2>
+          <div class="section-content">
+            <p>Herd is actively in development. I'm working on refining the core features and preparing for launch.</p>
+            
+            <div class="status-badge">
+              <span class="status-dot"></span>
+              <span>Work in Progress</span>
+            </div>
+
+            <p style="margin-top: 2rem;">The platform combines real-time collaboration with AI-powered planning to make group travel effortless. More details coming soon as the product takes shape.</p>
+
+            <p style="margin-top: 1.5rem; font-style: italic; color: rgba(255, 255, 255, 0.7);">Interested in learning more? Feel free to reach out!</p>
+          </div>
+        </section>
+
+        <!-- Other Work -->
+        <section class="other-work">
+          <h2 class="other-work-title">Check out my other work</h2>
+          <div class="other-work-grid">
+            <a href="tiktok.html" class="other-work-card">
+              <div>
+                <h3>TikTok</h3>
+                <p>Product Management Intern</p>
+              </div>
+              <span class="arrow">→</span>
+            </a>
+            <a href="applied.html" class="other-work-card">
+              <div>
+                <h3>Applied Materials</h3>
+                <p>Product Intern, AI/ML</p>
+              </div>
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </section>
+
+        <footer class="page-footer">
+          © Darren Rodricks. All Rights Reserved.
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- WebGL Script -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('gradient-canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      
+      if (!gl) {
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      let mouse = { x: 0.5, y: 0.5 };
+      let targetMouse = { x: 0.5, y: 0.5 };
+      
+      document.addEventListener('mousemove', (e) => {
+        targetMouse.x = e.clientX / window.innerWidth;
+        targetMouse.y = 1.0 - (e.clientY / window.innerHeight);
+      });
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      
+      window.addEventListener('resize', resize);
+      resize();
+
+      function compileShader(type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vertexSource = document.getElementById('vertex-shader').textContent;
+      const fragmentSource = document.getElementById('fragment-shader').textContent;
+
+      const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
+      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+
+      if (!vertexShader || !fragmentShader) {
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error('Program link error:', gl.getProgramInfoLog(program));
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      gl.useProgram(program);
+
+      const positions = new Float32Array([
+        -1, -1,  1, -1,  -1,  1,  1,  1,
+      ]);
+
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+      const positionLocation = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+      const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+      const timeLocation = gl.getUniformLocation(program, 'u_time');
+      const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+      let startTime = Date.now();
+      
+      function render() {
+        const time = (Date.now() - startTime) / 1000;
+        
+        mouse.x += (targetMouse.x - mouse.x) * 0.05;
+        mouse.y += (targetMouse.y - mouse.y) * 0.05;
+        
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        gl.uniform1f(timeLocation, time);
+        gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+        
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        
+        requestAnimationFrame(render);
+      }
+      
+      render();
+    })();
+
+    // Smooth scroll for sidebar navigation
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const target = document.querySelector(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Update active state
+        document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Update active sidebar link on scroll
+    const sections = document.querySelectorAll('.content-section, .project-hero');
+    const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok | Darren Rodricks</title>
+  <meta name="description" content="Product Management Intern at TikTok - Darren Rodricks">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LOGO / MENU BUTTON
+       ═══════════════════════════════════════════════════════════ */
+    .logo {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.5s forwards;
+    }
+
+    .logo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-style: normal;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+    }
+
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      border-radius: 25px;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0;
+    }
+
+    .menu-items {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0;
+    }
+
+    .menu-items a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 400;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .menu-items a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .menu-container:hover {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 25px;
+      padding: 0.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .menu-container:hover .logo-btn {
+      border-color: transparent;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .menu-container:hover .menu-items {
+      max-height: 200px;
+      opacity: 1;
+      padding-bottom: 0.2rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       WEBGL CANVAS BACKGROUND
+       ═══════════════════════════════════════════════════════════ */
+    #gradient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MAIN LAYOUT
+       ═══════════════════════════════════════════════════════════ */
+    .page-content {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 6rem 4rem;
+    }
+
+    .project-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      html {
+        font-size: 16px;
+      }
+
+      .page-content {
+        padding: 5rem 1.5rem 3rem 1.5rem;
+      }
+
+      .logo {
+        top: 1.25rem;
+        left: 1.25rem;
+      }
+
+      .logo-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 0.9rem;
+      }
+
+      .menu-items a {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .main-content {
+        padding: 2rem;
+      }
+
+      .project-title {
+        font-size: clamp(2rem, 8vw, 2.75rem);
+      }
+
+      .project-role {
+        font-size: 1.15rem;
+      }
+
+      .project-tagline {
+        font-size: 1.05rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .section-content {
+        font-size: 1.05rem;
+      }
+
+      .back-link {
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+      }
+
+      .other-work-card {
+        min-height: 44px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      html {
+        font-size: 15px;
+      }
+
+      .page-content {
+        padding: 4.5rem 1.25rem 2.5rem 1.25rem;
+      }
+
+      .logo {
+        top: 1rem;
+        left: 1rem;
+      }
+
+      .logo-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 0.85rem;
+      }
+
+      .main-content {
+        padding: 1.5rem;
+      }
+
+      .project-title {
+        font-size: clamp(1.75rem, 10vw, 2.5rem);
+      }
+
+      .project-role {
+        font-size: 1.05rem;
+      }
+
+      .project-tagline {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .section-content {
+        font-size: 1rem;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MAIN CONTENT
+       ═══════════════════════════════════════════════════════════ */
+    .main-content {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 3rem;
+    }
+
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      transition: all 0.2s ease;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.2s forwards;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+
+    .back-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Hero Section */
+    .project-hero {
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.3s forwards;
+    }
+
+    .company-logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: #000;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .project-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 500;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .project-role {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 400;
+    }
+
+    .project-tagline {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.7;
+      margin-top: 1.5rem;
+    }
+
+    /* Metadata Grid */
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin: 2.5rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.5s forwards;
+    }
+
+    .metadata-item h3 {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    .metadata-item p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 1);
+    }
+
+    @media (max-width: 500px) {
+      .metadata-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* Content Sections */
+    .content-section {
+      margin: 3rem 0;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    .content-section:nth-child(1) { animation-delay: 0.6s; }
+    .content-section:nth-child(2) { animation-delay: 0.7s; }
+    .content-section:nth-child(3) { animation-delay: 0.8s; }
+
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: rgba(255, 200, 190, 1);
+      margin-bottom: 1.25rem;
+    }
+
+    .section-content {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.8;
+    }
+
+    .section-content p {
+      margin-bottom: 1.25rem;
+    }
+
+    .section-content ul {
+      margin: 1.25rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .section-content li {
+      margin-bottom: 0.75rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: rgba(255, 180, 170, 0.1);
+      border: 1px solid rgba(255, 180, 170, 0.3);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .highlight-box h4 {
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 200, 190, 1);
+      margin-bottom: 0.75rem;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .tag {
+      background: rgba(255, 180, 170, 0.2);
+      border: 1px solid rgba(255, 180, 170, 0.4);
+      color: rgba(255, 255, 255, 1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Other Work Section */
+    .other-work {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.9s forwards;
+    }
+
+    .other-work-title {
+      font-size: 1.4rem;
+      font-weight: 500;
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .other-work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .other-work-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .other-work-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 180, 170, 0.5);
+      transform: translateY(-3px);
+    }
+
+    .other-work-card h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .other-work-card p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .other-work-card .arrow {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .other-work-card:hover .arrow {
+      color: #fff;
+      transform: translateX(5px);
+    }
+
+    @media (max-width: 600px) {
+      .other-work-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page-footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- WebGL Gradient Canvas -->
+  <canvas id="gradient-canvas"></canvas>
+
+  <!-- Vertex Shader -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec2 a_position;
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  </script>
+
+  <!-- Fragment Shader -->
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision highp float;
+    
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+    
+    vec4 permute(vec4 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) { 
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+
+      vec3 i  = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+
+      i = mod(i, 289.0);
+      vec4 p = permute(permute(permute(
+                i.z + vec4(0.0, i1.z, i2.z, 1.0))
+              + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+              + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+      float n_ = 1.0/7.0;
+      vec3 ns = n_ * D.wyz - D.xzx;
+
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+
+      vec4 x = x_ *ns.x + ns.yyyy;
+      vec4 y = y_ *ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+
+      vec3 p0 = vec3(a0.xy, h.x);
+      vec3 p1 = vec3(a0.zw, h.y);
+      vec3 p2 = vec3(a1.xy, h.z);
+      vec3 p3 = vec3(a1.zw, h.w);
+
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+      p0 *= norm.x;
+      p1 *= norm.y;
+      p2 *= norm.z;
+      p3 *= norm.w;
+
+      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    }
+    
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+      
+      float t = u_time * 0.35;
+      
+      vec2 mouseInfluence = (u_mouse - 0.5) * 0.15;
+      
+      float noise1 = snoise(vec3(uv.x * 1.8 + mouseInfluence.x, uv.y * 1.8 + mouseInfluence.y, t));
+      float noise2 = snoise(vec3(uv.x * 3.0 + 100.0, uv.y * 3.0, t * 1.2 + 50.0));
+      float noise3 = snoise(vec3(uv.x * 0.8 - 30.0, uv.y * 0.8 + 50.0, t * 0.8));
+      float noise4 = snoise(vec3(uv.x * 2.2 + 200.0, uv.y * 2.2, t * 1.5));
+      
+      float combinedNoise = (noise1 * 0.4 + noise2 * 0.3 + noise3 * 0.2 + noise4 * 0.1);
+      
+      vec3 color1 = vec3(0.25, 0.45, 0.50);
+      vec3 color2 = vec3(0.75, 0.50, 0.45);
+      vec3 color3 = vec3(0.60, 0.45, 0.65);
+      vec3 color4 = vec3(0.40, 0.55, 0.75);
+      vec3 color5 = vec3(0.40, 0.60, 0.50);
+      
+      float angle = t * 0.3;
+      float blend1 = smoothstep(-0.6, 0.6, combinedNoise + sin(uv.x * 3.14 + angle) * 0.3);
+      float blend2 = smoothstep(-0.4, 0.6, combinedNoise + cos(uv.y * 3.14 - angle) * 0.3);
+      float blend3 = smoothstep(-0.5, 0.5, sin(t * 0.5) * 0.5 + combinedNoise);
+      
+      vec3 colorA = mix(color1, color2, blend1);
+      vec3 colorB = mix(color3, color4, blend1);
+      vec3 colorC = mix(colorA, colorB, blend2);
+      vec3 finalColor = mix(colorC, color5, blend3 * 0.4);
+      
+      finalColor += combinedNoise * 0.12;
+      
+      float vignette = 1.0 - smoothstep(0.5, 1.6, length(uv - 0.5) * 1.0);
+      finalColor *= 0.92 + vignette * 0.08;
+      
+      float gray = dot(finalColor, vec3(0.299, 0.587, 0.114));
+      finalColor = mix(vec3(gray), finalColor, 1.15);
+      
+      gl_FragColor = vec4(finalColor, 1.0);
+    }
+  </script>
+
+  <!-- Logo / Menu Button -->
+  <nav class="logo">
+    <div class="menu-container">
+      <a href="index.html" class="logo-btn" aria-label="Home">DR</a>
+      <div class="menu-items">
+        <a href="work.html">Work</a>
+        <a href="about.html">About</a>
+        <a href="gallery.html">Gallery</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="page-content">
+    <div class="project-container">
+      <main class="main-content">
+        
+        <!-- Back Link -->
+        <a href="work.html" class="back-link">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          Back to Work
+        </a>
+
+        <!-- Hero Section -->
+        <header class="project-hero">
+          <div class="company-logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Cyan shadow -->
+                <path d="M33.3 17.7V21.1C31.1 21.1 29.1 20.5 27.4 19.4V27.5C27.4 32 23.8 35.6 19.3 35.6C14.8 35.6 11.2 32 11.2 27.5C11.2 23 14.8 19.4 19.3 19.4C19.7 19.4 20.2 19.5 20.6 19.5V23.1C20.2 23 19.7 22.9 19.3 22.9C16.8 22.9 14.7 25 14.7 27.5C14.7 30 16.8 32.1 19.3 32.1C21.8 32.1 24 30.1 24 27.5V10H27.5C27.5 10 27.4 11.1 27.8 12.2C28.3 14.3 30 15.9 32.1 16.5C32.8 16.6 33.3 17.7 33.3 17.7Z" fill="#25F4EE" transform="translate(-1.5, 0)"/>
+                <!-- Red shadow -->
+                <path d="M33.3 17.7V21.1C31.1 21.1 29.1 20.5 27.4 19.4V27.5C27.4 32 23.8 35.6 19.3 35.6C14.8 35.6 11.2 32 11.2 27.5C11.2 23 14.8 19.4 19.3 19.4C19.7 19.4 20.2 19.5 20.6 19.5V23.1C20.2 23 19.7 22.9 19.3 22.9C16.8 22.9 14.7 25 14.7 27.5C14.7 30 16.8 32.1 19.3 32.1C21.8 32.1 24 30.1 24 27.5V10H27.5C27.5 10 27.4 11.1 27.8 12.2C28.3 14.3 30 15.9 32.1 16.5C32.8 16.6 33.3 17.7 33.3 17.7Z" fill="#FE2C55" transform="translate(1.5, 0)"/>
+                <!-- White main -->
+                <path d="M33.3 17.7V21.1C31.1 21.1 29.1 20.5 27.4 19.4V27.5C27.4 32 23.8 35.6 19.3 35.6C14.8 35.6 11.2 32 11.2 27.5C11.2 23 14.8 19.4 19.3 19.4C19.7 19.4 20.2 19.5 20.6 19.5V23.1C20.2 23 19.7 22.9 19.3 22.9C16.8 22.9 14.7 25 14.7 27.5C14.7 30 16.8 32.1 19.3 32.1C21.8 32.1 24 30.1 24 27.5V10H27.5C27.5 10 27.4 11.1 27.8 12.2C28.3 14.3 30 15.9 32.1 16.5C32.8 16.6 33.3 17.7 33.3 17.7Z" fill="white"/>
+              </svg>
+            </div>
+          </div>
+          <h1 class="project-title">TikTok</h1>
+          <p class="project-role">Product Management Intern</p>
+          <p class="project-tagline">Working on AI-Generated Content (AIGC) policy and platform integrity, building LLM-driven solutions to detect and manage AI content across TikTok's ecosystem.</p>
+        </header>
+
+        <!-- Metadata -->
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <h3>Role</h3>
+            <p>Product Management Intern</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Team</h3>
+            <p>Product-Content Ecosystem</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Duration</h3>
+            <p>June 2025 – September 2025</p>
+          </div>
+          <div class="metadata-item">
+            <h3>Location</h3>
+            <p>San Jose, CA</p>
+          </div>
+        </div>
+
+        <!-- What I Do Section -->
+        <section class="content-section">
+          <h2 class="section-title">My Role</h2>
+          <div class="section-content">
+            <p>I work on the Product-Content Ecosystem team focusing on AI-Generated Content policy across TikTok's P&C (Privacy & Compliance) and Eco verticals. My role sits at the intersection of product strategy, policy enforcement, and machine learning.</p>
+            
+            <ul>
+              <li><strong>AIGC Case Analysis:</strong> Lead the collection and categorization of AI-generated content policy issues, identifying key trends and compliance risks across the platform</li>
+              <li><strong>LLM Strategy:</strong> Built and launched an LLM-driven approach to detect and filter AI-generated video content, reducing policy violations</li>
+              <li><strong>Cross-functional Collaboration:</strong> Partner with algorithm teams to implement content filtering based on updated policy signals and mitigation strategies</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Impact Section -->
+        <section class="content-section">
+          <h2 class="section-title">Impact</h2>
+          <div class="section-content">
+            <div class="highlight-box">
+              <h4>Key Contribution</h4>
+              <p>Developed and deployed an LLM-based detection strategy that strengthened platform integrity by identifying AI-generated content that violated community guidelines.</p>
+            </div>
+            <p>Working at TikTok's scale means every product decision impacts millions of creators and billions of viewers. I've gained hands-on experience translating complex policy requirements into technical solutions that protect users while preserving creative expression.</p>
+          </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="content-section">
+          <h2 class="section-title">Skills & Tools</h2>
+          <div class="section-content">
+            <div class="tags">
+              <span class="tag">Product Strategy</span>
+              <span class="tag">AI/ML</span>
+              <span class="tag">SQL</span>
+              <span class="tag">LLMs</span>
+              <span class="tag">Policy Analysis</span>
+              <span class="tag">Cross-functional Leadership</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Other Work -->
+        <section class="other-work">
+          <h2 class="other-work-title">Check out my other work</h2>
+          <div class="other-work-grid">
+            <a href="herd.html" class="other-work-card">
+              <div>
+                <h3>Herd</h3>
+                <p>Founder + Full Stack Dev</p>
+              </div>
+              <span class="arrow">→</span>
+            </a>
+            <a href="applied.html" class="other-work-card">
+              <div>
+                <h3>Applied Materials</h3>
+                <p>Product Intern, AI/ML</p>
+              </div>
+              <span class="arrow">→</span>
+            </a>
+          </div>
+        </section>
+
+        <footer class="page-footer">
+          © Darren Rodricks. All Rights Reserved.
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- WebGL Script -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('gradient-canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      
+      if (!gl) {
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      let mouse = { x: 0.5, y: 0.5 };
+      let targetMouse = { x: 0.5, y: 0.5 };
+      
+      document.addEventListener('mousemove', (e) => {
+        targetMouse.x = e.clientX / window.innerWidth;
+        targetMouse.y = 1.0 - (e.clientY / window.innerHeight);
+      });
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      
+      window.addEventListener('resize', resize);
+      resize();
+
+      function compileShader(type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vertexSource = document.getElementById('vertex-shader').textContent;
+      const fragmentSource = document.getElementById('fragment-shader').textContent;
+
+      const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
+      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+
+      if (!vertexShader || !fragmentShader) {
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error('Program link error:', gl.getProgramInfoLog(program));
+        canvas.style.background = 'linear-gradient(135deg, #5a8a8a 0%, #d9ad94 50%, #b89fc0 100%)';
+        return;
+      }
+
+      gl.useProgram(program);
+
+      const positions = new Float32Array([
+        -1, -1,  1, -1,  -1,  1,  1,  1,
+      ]);
+
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+      const positionLocation = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+      const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+      const timeLocation = gl.getUniformLocation(program, 'u_time');
+      const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+      let startTime = Date.now();
+      
+      function render() {
+        const time = (Date.now() - startTime) / 1000;
+        
+        mouse.x += (targetMouse.x - mouse.x) * 0.05;
+        mouse.y += (targetMouse.y - mouse.y) * 0.05;
+        
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        gl.uniform1f(timeLocation, time);
+        gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+        
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        
+        requestAnimationFrame(render);
+      }
+      
+      render();
+    })();
+  </script>
+</body>
+</html>
