@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Applied Materials | Darren Rodricks</title>
   <meta name="description" content="Product Intern, AI/ML at Applied Materials - Darren Rodricks">
   
@@ -33,98 +33,269 @@
       line-height: 1.6;
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
     }
 
     /* ═══════════════════════════════════════════════════════════
-       LOGO / MENU BUTTON
+       LIQUID GLASS NAVIGATION BAR
        ═══════════════════════════════════════════════════════════ */
-    .logo {
+    .navbar {
       position: fixed;
-      top: 2rem;
-      left: 2rem;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 100;
       opacity: 0;
-      animation: fadeIn 1s ease-out 0.5s forwards;
+      animation: navSlideDown 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
     }
 
-    .logo-btn {
+    @keyframes navSlideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .nav-glass {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.6rem;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-glass:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-logo {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       text-decoration: none;
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.9rem;
+      color: #fff;
+      font-size: 0.85rem;
       font-weight: 500;
-      font-style: normal;
       letter-spacing: 0.5px;
       transition: all 0.3s ease;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      background: rgba(255, 255, 255, 0.05);
-      cursor: pointer;
     }
 
-    .menu-container {
+    .nav-logo:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .nav-links {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0;
-      border-radius: 25px;
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      padding: 0;
+      align-items: center;
+      gap: 0.25rem;
+      padding-left: 0.25rem;
     }
 
-    .menu-items {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.2rem;
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      padding: 0;
-    }
-
-    .menu-items a {
+    .nav-links a {
+      position: relative;
       color: rgba(255, 255, 255, 0.85);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 400;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
+      padding: 0.6rem 1rem;
+      border-radius: 25px;
+      transition: all 0.3s ease;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .menu-items a:hover {
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0);
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
       color: #fff;
+    }
+
+    .nav-links a:hover::before {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-links a.active {
+      color: #fff;
+    }
+
+    .nav-links a.active::before {
       background: rgba(255, 255, 255, 0.15);
     }
 
-    .menu-container:hover {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 25px;
-      padding: 0.4rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Mobile hamburger button */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      gap: 5px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
-    .menu-container:hover .logo-btn {
-      border-color: transparent;
-      color: #fff;
-      margin-bottom: 0.3rem;
+    .nav-hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
 
-    .menu-container:hover .menu-items {
-      max-height: 200px;
+    .nav-hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Mobile menu overlay */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .mobile-menu.active {
       opacity: 1;
-      padding-bottom: 0.2rem;
+      visibility: visible;
+    }
+
+    .mobile-menu-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 1rem;
+      transform: translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .mobile-menu.active .mobile-menu-content {
+      transform: translateY(0);
+    }
+
+    .mobile-menu a {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 1.8rem;
+      font-weight: 400;
+      font-style: italic;
+      padding: 0.75rem 2rem;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mobile responsive for navbar */
+    @media (max-width: 600px) {
+      .navbar {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        /* Safe area for iPhone X+ notch */
+        top: max(1rem, env(safe-area-inset-top));
+        left: max(1rem, env(safe-area-inset-left));
+        right: max(1rem, env(safe-area-inset-right));
+      }
+
+      .nav-glass {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.4rem 0.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .nav-logo {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+      }
+
+      .nav-hamburger {
+        width: 36px;
+        height: 36px;
+      }
+
+      .mobile-menu a {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+        font-size: 1.5rem;
+      }
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -592,6 +763,14 @@
       color: rgba(255, 255, 255, 0.6);
       font-size: 0.9rem;
     }
+
+
+    /* iPhone safe area for mobile menu */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .mobile-menu-content {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
   </style>
 </head>
 <body>
@@ -719,17 +898,31 @@
     }
   </script>
 
-  <!-- Logo / Menu Button -->
-  <nav class="logo">
-    <div class="menu-container">
-      <a href="index.html" class="logo-btn" aria-label="Home">DR</a>
-      <div class="menu-items">
+    <!-- Liquid Glass Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-glass">
+      <a href="index.html" class="nav-logo" aria-label="Home">DR</a>
+      <div class="nav-links">
         <a href="work.html">Work</a>
         <a href="about.html">About</a>
         <a href="gallery.html">Gallery</a>
       </div>
+      <button class="nav-hamburger" aria-label="Menu" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu" id="mobileMenu" onclick="closeMobileMenu(event)">
+    <div class="mobile-menu-content">
+      <a href="work.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="gallery.html">Gallery</a>
+    </div>
+  </div>
 
   <!-- Page Content -->
   <div class="page-content">
@@ -876,6 +1069,23 @@
       </main>
     </div>
   </div>
+
+  <!-- Mobile Menu Script -->
+  <script>
+    function toggleMobileMenu() {
+      const hamburger = document.querySelector('.nav-hamburger');
+      const mobileMenu = document.getElementById('mobileMenu');
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    }
+
+    function closeMobileMenu(event) {
+      if (event.target.id === 'mobileMenu') {
+        toggleMobileMenu();
+      }
+    }
+  </script>
 
   <!-- WebGL Script -->
   <script>
