@@ -60,6 +60,7 @@
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
       }
+
       to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
@@ -76,7 +77,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 50px;
-      box-shadow: 
+      box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.15),
         inset 0 -1px 0 rgba(255, 255, 255, 0.05);
@@ -86,7 +87,7 @@
     .nav-glass:hover {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 
+      box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.2),
         inset 0 -1px 0 rgba(255, 255, 255, 0.05);
@@ -256,19 +257,34 @@
     @media (max-width: 600px) {
       .navbar {
         top: 1rem;
-        left: 1rem;
-        right: 1rem;
-        transform: none;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
         /* Safe area for iPhone X+ notch */
         top: max(1rem, env(safe-area-inset-top));
-        left: max(1rem, env(safe-area-inset-left));
-        right: max(1rem, env(safe-area-inset-right));
+      }
+
+      @keyframes navSlideDown {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
       }
 
       .nav-glass {
-        width: 100%;
-        justify-content: space-between;
+        width: auto;
+        justify-content: center;
         padding: 0.4rem 0.5rem;
+        gap: 0.5rem;
+      }
+
+      .nav-logo {
+        display: flex;
       }
 
       .nav-links {
@@ -297,8 +313,8 @@
       }
 
       .mobile-menu a {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
         font-size: 1.5rem;
       }
     }
@@ -723,6 +739,7 @@
   <!-- Mobile Menu Overlay -->
   <div class="mobile-menu" id="mobileMenu" onclick="closeMobileMenu(event)">
     <div class="mobile-menu-content">
+      <a href="index.html">Home</a>
       <a href="work.html">Work</a>
       <a href="about.html">About</a>
       <a href="gallery.html">Gallery</a>
@@ -759,7 +776,10 @@
 
           <p class="contact-links">
             To learn more about my experience, check out my <a href="work.html">work</a>, visit my <a
-              href="https://linkedin.com/in/darrenrodricks" target="_blank">LinkedIn</a>, or contact me at <a href="/cdn-cgi/l/email-protection#410520336f332e253328222a3201262c20282d6f222e2c"><span class="__cf_email__" data-cfemail="357154471b475a51475c565e46755258545c591b565a58">[email&#160;protected]</span></a>
+              href="https://linkedin.com/in/darrenrodricks" target="_blank">LinkedIn</a>, or contact me at <a
+              href="/cdn-cgi/l/email-protection#410520336f332e253328222a3201262c20282d6f222e2c"><span
+                class="__cf_email__"
+                data-cfemail="357154471b475a51475c565e46755258545c591b565a58">[email&#160;protected]</span></a>
           </p>
         </div>
       </section>
@@ -790,7 +810,8 @@
   </script>
 
   <!-- WebGL Script -->
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
     (function () {
       const canvas = document.getElementById('gradient-canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -894,4 +915,5 @@
     })();
   </script>
 </body>
+
 </html>
