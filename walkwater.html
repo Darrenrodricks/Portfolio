@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Walkwater Technologies | Darren Rodricks</title>
-  <meta name="description" content="Technical Product Management Intern at Walkwater Technologies - Darren Rodricks">
+  <title>Work | Darren Rodricks</title>
+  <meta name="description" content="Work and projects by Darren Rodricks">
   
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="favicon.jpeg">
@@ -12,7 +12,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   
   <style>
     *, *::before, *::after {
@@ -35,6 +35,11 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -webkit-text-size-adjust: 100%;
+    }
+
+    /* Prevent pull-to-refresh on iOS when not needed */
+    html {
+      overscroll-behavior: none;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -171,6 +176,10 @@
       touch-action: manipulation;
     }
 
+    .nav-hamburger:active {
+      opacity: 0.7;
+    }
+
     .nav-hamburger span {
       display: block;
       width: 18px;
@@ -230,8 +239,6 @@
     }
 
     .mobile-menu a {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
       color: rgba(255, 255, 255, 0.9);
       text-decoration: none;
       font-size: 1.8rem;
@@ -240,6 +247,13 @@
       padding: 0.75rem 2rem;
       border-radius: 30px;
       transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .mobile-menu a:active {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0.98);
     }
 
     .mobile-menu a:hover {
@@ -310,6 +324,13 @@
       }
     }
 
+    /* iPhone safe area for mobile menu */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .mobile-menu-content {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+
     /* ═══════════════════════════════════════════════════════════
        WEBGL CANVAS BACKGROUND
        ═══════════════════════════════════════════════════════════ */
@@ -323,20 +344,303 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
-       MAIN LAYOUT
+       PAGE CONTENT
        ═══════════════════════════════════════════════════════════ */
     .page-content {
       position: relative;
       z-index: 1;
       min-height: 100vh;
-      padding: 6rem 4rem;
-    }
-
-    .project-container {
-      max-width: 900px;
+      padding: 6rem 4rem 4rem 4rem;
+      max-width: 1600px;
       margin: 0 auto;
     }
 
+    @media (max-width: 768px) {
+      .page-content {
+        padding: 6rem 1.5rem 2rem 1.5rem;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PAGE HEADER
+       ═══════════════════════════════════════════════════════════ */
+    .page-header {
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeIn 1s ease-out 0.3s forwards;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 400;
+      font-style: italic;
+      color: #fff;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .page-subtitle {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+      max-width: 100%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       WORK GRID
+       ═══════════════════════════════════════════════════════════ */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GLASS CARDS - Liquid Glass Effect
+       ═══════════════════════════════════════════════════════════ */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: cardFadeIn 0.8s ease-out forwards;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* Custom minimal cursor for cards - desktop only */
+    @media (hover: hover) and (pointer: fine) {
+      .glass-card {
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='2'/%3E%3Ccircle cx='12' cy='12' r='2' fill='rgba(255,255,255,0.9)'/%3E%3C/svg%3E") 12 12, pointer;
+      }
+    }
+
+    /* Touch/tap active state for mobile */
+    .glass-card:active {
+      transform: translateY(0) scale(0.98);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-5px);
+    }
+
+    /* Company-specific hover glows */
+    .glass-card.herd:hover {
+      border-color: rgba(134, 179, 134, 0.5);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(134, 179, 134, 0.15),
+        inset 0 0 20px rgba(134, 179, 134, 0.05);
+    }
+
+    .glass-card.tiktok:hover {
+      border-color: rgba(238, 29, 82, 0.4);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 15px rgba(238, 29, 82, 0.2),
+        0 0 30px rgba(37, 244, 238, 0.1),
+        inset 0 0 20px rgba(238, 29, 82, 0.05);
+    }
+
+    .glass-card.resiligence:hover {
+      border-color: rgba(100, 180, 220, 0.5);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(100, 180, 220, 0.2),
+        inset 0 0 20px rgba(100, 180, 220, 0.05);
+    }
+
+    .glass-card.applied:hover {
+      border-color: rgba(0, 120, 200, 0.4);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 15px rgba(0, 120, 200, 0.2),
+        0 0 25px rgba(255, 255, 255, 0.1),
+        inset 0 0 20px rgba(0, 120, 200, 0.05);
+    }
+
+    .glass-card.walkwater:hover {
+      border-color: rgba(64, 180, 229, 0.5);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(64, 180, 229, 0.2),
+        inset 0 0 20px rgba(64, 180, 229, 0.05);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent
+      );
+    }
+
+    .glass-card:nth-child(1) { animation-delay: 0.4s; }
+    .glass-card:nth-child(2) { animation-delay: 0.5s; }
+    .glass-card:nth-child(3) { animation-delay: 0.6s; }
+    .glass-card:nth-child(4) { animation-delay: 0.7s; }
+    .glass-card:nth-child(5) { animation-delay: 0.8s; }
+    .glass-card:nth-child(6) { animation-delay: 0.9s; }
+
+    @keyframes cardFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .glass-card.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-logo {
+      width: 40px;
+      height: 40px;
+      opacity: 0.85;
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+
+    .card-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 0;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .card-description {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-top: 1.5rem;
+      padding: 0.5rem 0;
+      transition: all 0.2s ease;
+    }
+
+    .card-link:hover {
+      color: #fff;
+      gap: 0.75rem;
+    }
+
+    .card-link::after {
+      content: '→';
+      transition: transform 0.2s ease;
+    }
+
+    .card-link:hover::after {
+      transform: translateX(3px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       ANIMATIONS
+       ═══════════════════════════════════════════════════════════ */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════ */
+    .page-footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.7s forwards;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
       html {
         font-size: 16px;
@@ -344,13 +648,17 @@
 
       .page-content {
         padding: 5rem 1.5rem 3rem 1.5rem;
+        /* Safe area for iPhone X+ */
+        padding-left: max(1.5rem, env(safe-area-inset-left));
+        padding-right: max(1.5rem, env(safe-area-inset-right));
+        padding-bottom: max(3rem, env(safe-area-inset-bottom));
       }
 
       .logo {
         top: 1.25rem;
         left: 1.25rem;
       }
-
+      
       .logo-btn {
         width: 44px;
         height: 44px;
@@ -365,40 +673,49 @@
         align-items: center;
       }
 
-      .main-content {
-        padding: 2rem;
+      .page-header {
+        margin-bottom: 2rem;
       }
 
-      .project-title {
-        font-size: clamp(2rem, 8vw, 2.75rem);
+      .page-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+        margin-bottom: 0.75rem;
       }
 
-      .project-role {
-        font-size: 1.15rem;
+      .page-subtitle {
+        font-size: 1rem;
       }
 
-      .project-tagline {
-        font-size: 1.05rem;
+      .work-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
 
-      .section-title {
-        font-size: 1.5rem;
+      .glass-card {
+        padding: 1.75rem;
       }
 
-      .section-content {
-        font-size: 1.05rem;
+      .card-title {
+        font-size: 1.35rem;
       }
 
-      .back-link {
+      .card-description {
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .card-link {
         font-size: 0.9rem;
-        padding: 0.5rem 0;
+        padding: 0.6rem 0;
         min-height: 44px;
         display: flex;
         align-items: center;
       }
 
-      .other-work-card {
-        min-height: 44px;
+      .page-footer {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
       }
     }
 
@@ -422,329 +739,25 @@
         font-size: 0.85rem;
       }
 
-      .main-content {
-        padding: 1.5rem;
-      }
-
-      .project-title {
+      .page-title {
         font-size: clamp(1.75rem, 10vw, 2.5rem);
       }
 
-      .project-role {
-        font-size: 1.05rem;
+      .glass-card {
+        padding: 1.5rem;
       }
 
-      .project-tagline {
-        font-size: 1rem;
+      .card-title {
+        font-size: 1.25rem;
       }
 
-      .section-title {
-        font-size: 1.35rem;
+      .card-description {
+        font-size: 0.9rem;
       }
 
-      .section-content {
-        font-size: 1rem;
-      }
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       MAIN CONTENT
-       ═══════════════════════════════════════════════════════════ */
-    .main-content {
-      max-width: 800px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 24px;
-      padding: 3rem;
-    }
-
-    /* Back Link */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-      transition: all 0.2s ease;
-      opacity: 0;
-      animation: fadeIn 0.8s ease-out 0.2s forwards;
-    }
-
-    .back-link:hover {
-      color: #fff;
-    }
-
-    .back-link svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    /* Hero Section */
-    .project-hero {
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeIn 0.8s ease-out 0.3s forwards;
-    }
-
-    .company-logo {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .logo-icon {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #0EA5E9, #06B6D4);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-    }
-
-    .logo-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .project-title {
-      font-size: clamp(2.2rem, 5vw, 3.2rem);
-      font-weight: 500;
-      font-style: italic;
-      margin-bottom: 0.5rem;
-      line-height: 1.1;
-    }
-
-    .project-role {
-      font-size: 1.3rem;
-      color: rgba(255, 255, 255, 0.8);
-      font-weight: 400;
-    }
-
-    .project-tagline {
-      font-size: 1.15rem;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.7;
-      margin-top: 1.5rem;
-    }
-
-    /* Metadata Grid */
-    .metadata-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      margin: 2.5rem 0;
-      padding: 2rem 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      animation: fadeIn 0.8s ease-out 0.5s forwards;
-    }
-
-    .metadata-item h3 {
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 0.5rem;
-    }
-
-    .metadata-item p {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 1);
-    }
-
-    @media (max-width: 500px) {
-      .metadata-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-    }
-
-    /* Content Sections */
-    .content-section {
-      margin: 3rem 0;
-      opacity: 0;
-      animation: fadeIn 0.8s ease-out forwards;
-    }
-
-    .content-section:nth-child(1) { animation-delay: 0.6s; }
-    .content-section:nth-child(2) { animation-delay: 0.7s; }
-    .content-section:nth-child(3) { animation-delay: 0.8s; }
-
-    .section-title {
-      font-size: 1.6rem;
-      font-weight: 500;
-      color: rgba(255, 200, 190, 1);
-      margin-bottom: 1.25rem;
-    }
-
-    .section-content {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.8;
-    }
-
-    .section-content p {
-      margin-bottom: 1.25rem;
-    }
-
-    .section-content ul {
-      margin: 1.25rem 0;
-      padding-left: 1.5rem;
-    }
-
-    .section-content li {
-      margin-bottom: 0.75rem;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    /* Highlight Box */
-    .highlight-box {
-      background: rgba(255, 180, 170, 0.1);
-      border: 1px solid rgba(255, 180, 170, 0.3);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin: 1.5rem 0;
-    }
-
-    .highlight-box h4 {
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: rgba(255, 200, 190, 1);
-      margin-bottom: 0.75rem;
-    }
-
-    .highlight-box p {
-      margin: 0;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    /* Tags */
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
-    }
-
-    .tag {
-      background: rgba(255, 180, 170, 0.2);
-      border: 1px solid rgba(255, 180, 170, 0.4);
-      color: rgba(255, 255, 255, 1);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
-
-    /* Other Work Section */
-    .other-work {
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      opacity: 0;
-      animation: fadeIn 0.8s ease-out 0.9s forwards;
-    }
-
-    .other-work-title {
-      font-size: 1.4rem;
-      font-weight: 500;
-      font-style: italic;
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .other-work-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
-    }
-
-    .other-work-card {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      padding: 1.25rem;
-      text-decoration: none;
-      color: #fff;
-      transition: all 0.3s ease;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .other-work-card:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 180, 170, 0.5);
-      transform: translateY(-3px);
-    }
-
-    .other-work-card h3 {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 0.3rem;
-    }
-
-    .other-work-card p {
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .other-work-card .arrow {
-      font-size: 1.3rem;
-      color: rgba(255, 255, 255, 0.5);
-      transition: all 0.3s ease;
-    }
-
-    .other-work-card:hover .arrow {
-      color: #fff;
-      transform: translateX(5px);
-    }
-
-    @media (max-width: 600px) {
-      .other-work-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .page-footer {
-      text-align: center;
-      margin-top: 4rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.9rem;
-    }
-
-
-    /* iPhone safe area for mobile menu */
-    @supports (padding: env(safe-area-inset-bottom)) {
-      .mobile-menu-content {
-        padding-bottom: env(safe-area-inset-bottom);
+      .tag {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
       }
     }
   </style>
@@ -874,12 +887,12 @@
     }
   </script>
 
-    <!-- Liquid Glass Navigation Bar -->
+  <!-- Liquid Glass Navigation Bar -->
   <nav class="navbar">
     <div class="nav-glass">
       <a href="index.html" class="nav-logo" aria-label="Home">DR</a>
       <div class="nav-links">
-        <a href="work.html">Work</a>
+        <a href="work.html" class="active">Work</a>
         <a href="about.html">About</a>
         <a href="gallery.html">Gallery</a>
       </div>
@@ -902,121 +915,134 @@
   </div>
 
   <!-- Page Content -->
-  <div class="page-content">
-    <div class="project-container">
-      <main class="main-content">
-        
-        <!-- Back Link -->
-        <a href="work.html" class="back-link">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-          Back to Work
-        </a>
+  <main class="page-content">
+    <header class="page-header">
+      <h1 class="page-title">Work</h1>
+      <p class="page-subtitle">A collection of projects and experiences that have shaped my journey in product management and technology.</p>
+    </header>
 
-        <!-- Hero Section -->
-        <header class="project-hero">
-          <div class="company-logo">
-            <div class="logo-icon" style="background: linear-gradient(135deg, #0077B6 0%, #00A8E8 100%);">
-              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">W</text>
-              </svg>
-            </div>
-          </div>
-          <h1 class="project-title">Walkwater Technologies</h1>
-          <p class="project-role">Technical Product Management Intern</p>
-          <p class="project-tagline">Managed cloud-based recruiting tools and optimized data pipelines using Google Cloud Platform, improving data retrieval efficiency by 30%.</p>
-        </header>
-
-        <!-- Metadata -->
-        <div class="metadata-grid">
-          <div class="metadata-item">
-            <h3>Role</h3>
-            <p>Technical PM Intern</p>
-          </div>
-          <div class="metadata-item">
-            <h3>Focus</h3>
-            <p>Cloud Data & Recruiting Tools</p>
-          </div>
-          <div class="metadata-item">
-            <h3>Duration</h3>
-            <p>November 2020 – August 2021</p>
-          </div>
-          <div class="metadata-item">
-            <h3>Location</h3>
-            <p>Remote (Global Team)</p>
+    <div class="work-grid">
+      <!-- Herd Project -->
+      <article class="glass-card herd" data-href="herd.html">
+        <span class="card-label">Project</span>
+        <div class="card-header">
+          <h2 class="card-title">Herd</h2>
+          <div class="card-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Back mountain -->
+              <path d="M6 32L16 14L26 32H6Z" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+              <!-- Front mountain -->
+              <path d="M18 32L28 16L38 32H18Z" fill="rgba(255,255,255,0.35)" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+              <!-- Snow cap back -->
+              <path d="M16 14L12 22L14 22L16 18L18 22L20 22L16 14Z" fill="rgba(255,255,255,0.85)"/>
+              <!-- Snow cap front -->
+              <path d="M28 16L24 24L26 24L28 20L30 24L32 24L28 16Z" fill="rgba(255,255,255,0.85)"/>
+            </svg>
           </div>
         </div>
+        <p class="card-description">Created Herd, an app that makes group travel planning easy. Friends can plan trips together, vote on what to do, split costs fairly, and get smart suggestions for their itinerary - all in one place.</p>
+        <div class="card-tags">
+          <span class="tag">Full-Stack Development</span>
+          <span class="tag">AI Integration (OpenAI GPT-4)</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">React + Node.js</span>
+        </div>
+        <a href="herd.html" class="card-link">View details</a>
+      </article>
 
-        <!-- My Role Section -->
-        <section class="content-section">
-          <h2 class="section-title">My Role</h2>
-          <div class="section-content">
-            <p>At Walkwater Technologies, I served as a Technical Product Management Intern working on their proprietary recruiting platform. This role blended product management with hands-on data engineering across Google Cloud services.</p>
-            
-            <ul>
-              <li><strong>Cloud Platform Management:</strong> Managed the recruiting tool using BigQuery, Cloud Data Fusion, Cloud Dataflow, Cloud BigTable, and Cloud Dataprep</li>
-              <li><strong>Global Collaboration:</strong> Collaborated with offshore team members across different time zones to create and maintain product roadmaps</li>
-              <li><strong>Data Optimization:</strong> Developed and optimized SQL queries to extract, transform, and analyze large datasets for improved system performance</li>
-            </ul>
+      <!-- TikTok -->
+      <article class="glass-card tiktok" data-href="tiktok.html">
+        <span class="card-label">TikTok</span>
+        <div class="card-header">
+          <h2 class="card-title">Product Management Intern</h2>
+          <div class="card-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M29.5 14.5V18.5C27.5 18.5 25.7 17.9 24.2 16.9V24.2C24.2 28.3 20.9 31.6 16.8 31.6C12.7 31.6 9.4 28.3 9.4 24.2C9.4 20.1 12.7 16.8 16.8 16.8C17.2 16.8 17.6 16.8 18 16.9V20.9C17.6 20.8 17.2 20.7 16.8 20.7C14.9 20.7 13.3 22.3 13.3 24.2C13.3 26.1 14.9 27.7 16.8 27.7C18.7 27.7 20.4 26.2 20.4 24.2V8.4H24.3C24.3 8.4 24.2 9.4 24.5 10.4C25 12.3 26.5 13.8 28.4 14.3C29 14.4 29.5 14.5 29.5 14.5Z" fill="rgba(255,255,255,0.85)"/>
+            </svg>
           </div>
-        </section>
+        </div>
+        <p class="card-description">Built and launched an LLM-driven strategy to detect AI-generated content, reducing policy violations and strengthening platform integrity.</p>
+        <div class="card-tags">
+          <span class="tag">Product Strategy</span>
+          <span class="tag">AI/ML</span>
+          <span class="tag">SQL</span>
+        </div>
+        <a href="tiktok.html" class="card-link">View details</a>
+      </article>
 
-        <!-- Impact Section -->
-        <section class="content-section">
-          <h2 class="section-title">Impact</h2>
-          <div class="section-content">
-            <div class="highlight-box">
-              <h4>Key Achievement</h4>
-              <p>Improved data retrieval efficiency by 30% through SQL query optimization, enabling faster candidate matching and reducing system latency.</p>
-            </div>
-            <p>This was my first experience working with distributed teams across time zones, teaching me valuable lessons about asynchronous communication and documentation. I gained deep exposure to Google Cloud's data stack and learned how to translate technical capabilities into product features.</p>
+      <!-- Resiligence -->
+      <article class="glass-card resiligence" data-href="resiligence.html">
+        <span class="card-label">Resiligence Inc.</span>
+        <div class="card-header">
+          <h2 class="card-title">Product Management Intern</h2>
+          <div class="card-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none"/>
+              <path d="M12 26L17 20L21 23L28 14" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M24 14H28V18" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
-        </section>
+        </div>
+        <p class="card-description">Conducted competitive market research and created strategic product roadmaps, translating business needs into technical requirements.</p>
+        <div class="card-tags">
+          <span class="tag">Market Research</span>
+          <span class="tag">Product Roadmaps</span>
+          <span class="tag">SaaS</span>
+        </div>
+        <a href="resiligence.html" class="card-link">View details</a>
+      </article>
 
-        <!-- Skills Section -->
-        <section class="content-section">
-          <h2 class="section-title">Skills & Tools</h2>
-          <div class="section-content">
-            <div class="tags">
-              <span class="tag">Google Cloud Platform</span>
-              <span class="tag">BigQuery</span>
-              <span class="tag">SQL</span>
-              <span class="tag">Data Engineering</span>
-              <span class="tag">Product Roadmaps</span>
-              <span class="tag">Cross-timezone Collaboration</span>
-            </div>
+      <!-- Applied Materials -->
+      <article class="glass-card applied" data-href="applied.html">
+        <span class="card-label">Applied Materials</span>
+        <div class="card-header">
+          <h2 class="card-title">Product Intern</h2>
+          <div class="card-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="12" width="16" height="16" rx="2" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="none"/>
+              <rect x="16" y="16" width="8" height="8" fill="rgba(255,255,255,0.8)"/>
+              <line x1="20" y1="8" x2="20" y2="12" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+              <line x1="20" y1="28" x2="20" y2="32" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+              <line x1="8" y1="20" x2="12" y2="20" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+              <line x1="28" y1="20" x2="32" y2="20" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+            </svg>
           </div>
-        </section>
+        </div>
+        <p class="card-description">Developed a chatbot achieving 96% accuracy and implemented ML forecasting models that increased prediction accuracy by 30%.</p>
+        <div class="card-tags">
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Data Science</span>
+          <span class="tag">Python</span>
+        </div>
+        <a href="applied.html" class="card-link">View details</a>
+      </article>
 
-        <!-- Other Work -->
-        <section class="other-work">
-          <h2 class="other-work-title">Check out my other work</h2>
-          <div class="other-work-grid">
-            <a href="applied.html" class="other-work-card">
-              <div>
-                <h3>Applied Materials</h3>
-                <p>Product Intern, AI/ML</p>
-              </div>
-              <span class="arrow">→</span>
-            </a>
-            <a href="herd.html" class="other-work-card">
-              <div>
-                <h3>Herd</h3>
-                <p>Founder + Full Stack Dev</p>
-              </div>
-              <span class="arrow">→</span>
-            </a>
+      <!-- WalkWater -->
+      <article class="glass-card walkwater" data-href="walkwater.html">
+        <span class="card-label">Walkwater Technologies</span>
+        <div class="card-header">
+          <h2 class="card-title">Technical PM Intern</h2>
+          <div class="card-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 8C20 8 12 18 12 24C12 28.4 15.6 32 20 32C24.4 32 28 28.4 28 24C28 18 20 8 20 8Z" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" fill="rgba(255,255,255,0.15)"/>
+              <path d="M17 24C17 24 16 26 17.5 27.5C19 29 21 28 21 28" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
           </div>
-        </section>
-
-        <footer class="page-footer">
-          © Darren Rodricks. All Rights Reserved.
-        </footer>
-
-      </main>
+        </div>
+        <p class="card-description">Managed a proprietary recruiting tool using Google Cloud services and optimized SQL queries, improving data retrieval efficiency by 30%.</p>
+        <div class="card-tags">
+          <span class="tag">Google Cloud</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Data Engineering</span>
+        </div>
+        <a href="walkwater.html" class="card-link">View details</a>
+      </article>
     </div>
-  </div>
+
+    <footer class="page-footer">
+      © Darren Rodricks. All Rights Reserved.
+    </footer>
+  </main>
 
   <!-- Mobile Menu Script -->
   <script>
@@ -1138,6 +1164,17 @@
       
       render();
     })();
+  </script>
+
+  <!-- Clickable Cards Script -->
+  <script>
+    document.querySelectorAll('.glass-card[data-href]').forEach(card => {
+      card.addEventListener('click', function(e) {
+        // Don't navigate if clicking on the card-link itself (to avoid double navigation)
+        if (e.target.closest('.card-link')) return;
+        window.location.href = this.dataset.href;
+      });
+    });
   </script>
 </body>
 </html>
